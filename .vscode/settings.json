@@ -1,5 +1,9 @@
 {
     "isort.interpreter": [
         "redjit_env\\Scripts\\python.exe"
-    ]
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none"
 }
