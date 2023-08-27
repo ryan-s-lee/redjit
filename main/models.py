@@ -12,23 +12,13 @@ class Community(models.Model):
 
 class UserData(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=32, unique=True)
+    userhandle = models.CharField(max_length=32, unique=True)
     birthday = models.DateField()
     communities = models.ManyToManyField(Community)
     def __str__(self) -> str:
         return self.username
 
-class Post(models.Model):
-    class Meta:
-        abstract = True
-        ordering=["creation_time"]
-
-    def creation_time_default():
-        return datetime.now()
-
-    def last_edit_time_default():
-        return datetime.now()
-
+class PostInfo(models.Model):
     content = models.TextField()
     creation_time = models.DateTimeField(default=datetime.now)
     last_edit_time = models.DateTimeField(default=datetime.now)
@@ -38,8 +28,14 @@ class Post(models.Model):
     def __str__(self) -> str:
         return self.title + "#" + str(self.pk)
 
-class MainPost(Post):
+class MainPost(models.Model):
     title = models.CharField(max_length=256)
+    info = models.OneToOneField(PostInfo, on_delete=models.CASCADE)
 
-class CommentPost(Post):
-    parent = models.OneToOneField(Post, on_delete=models.CASCADE)
+class CommentPost(models.Model):
+    class Meta:
+        # order_with_respect_to = "parent"
+        pass
+
+    parent = models.ForeignKey(MainPost, on_delete=models.CASCADE)
+    info = models.OneToOneField(PostInfo, on_delete=models.CASCADE)

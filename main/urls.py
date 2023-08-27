@@ -4,28 +4,32 @@ from django.views.generic.base import RedirectView
 from . import views
 '''
 Order of Completion:
-1. Base Template
-2. Feed (only using base template)
-3. Registration View
-4. Sign In View
-5. Create Community View
-6. Create Post View
-7. Feed View (complete)
-8. UserPostsView
-9. UserCommunitiesView
-10. Thread View
-11. Reply View
-12. Community View
+X   Base Template
+X   Feed (only using base template)
+X   RegistrationView
+    UserPostsView (sidebar only)
+X   SignInView
+    CreateCommunityView
+    CommunityView (sidebar only)
+    Create Post View
+    Feed View (complete)
+    UserPostsView
+    UserCommunitiesView
+    Thread View
+    Reply View
+    Community View
+    Style everything!
 '''
 
 urlpatterns = [
+    path("feed", views.FeedView, name="feed"),
     path("feed/<int:page>", views.FeedView, name="feed"),
     # community and post-related views
-    path("r/<str:name>/<int:page>", views.CommunityView, name="community"),
+    path("r/<str:name>/page_<int:page>", views.CommunityView, name="community"),
     path("create-community", views.CreateCommunityView, name="createcommunity"),
-    path("r/<str:community>/<int:mainpostkey><int:pk>/<int:page>", views.ThreadView, name="viewthread"),
+    path("r/<str:community>/main_<int:mainpostkey>/<int:pk>/page_<int:page>", views.ThreadView, name="viewthread"),
     path("r/<str:community>/post", views.CreatePostView, name="createpost"),
-    path("r/<str:community>/reply/<int:pk>/<int:page>", views.ReplyView, name="reply"),
+    path("r/<str:community>/reply/to<int:pk>/page<int:page>", views.ReplyView, name="reply"),
 
     # user related views
     path("signin", views.SignInView, name="signin"),
@@ -40,6 +44,7 @@ urlpatterns = [
         views.UserCommunitiesView,
         name="usercommunities",
     ),
+    path("logout", views.LogoutView, name="logout"),
 
     # convenient redirects
     path("", RedirectView.as_view(pattern_name="feed")),

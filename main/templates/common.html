@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Common Template{% endblock %}</title>
+</head>
+<body>
+    <!-- Control Bar-->
+    <navbar>
+        <div class="creatediv">
+            <a>+ Create</a>
+            <ul>
+                <li><a>Post</a></li>
+                <li><a>Community</a></li>
+            </ul>
+        </div>
+        {% if logged_in %}
+        <!-- User info -->
+        <div class="userblock">
+            <a>User</a>
+            <ul>
+                <li><a>About</a></li>
+                <li><a>Settings</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </div>
+        {% else %}
+        <ul>
+
+            <li><a href="{% url 'signin' %}">Sign In</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+        </ul>
+        {% endif %}
+    </navbar>
+    <!-- Content -->
+    <main>
+        <!-- Side Area -->
+        <div>
+            {% block sidearea %}
+            {% endblock %}
+        </div>
+        <!-- Main Area -->
+        <div>
+            {% block mainarea %}
+            {% endblock %}
+        </div>
+    </main>
+</body>
+</html>
