@@ -7,7 +7,8 @@ from django.contrib.auth import authenticate
 
 
 class RegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
+
     class Meta:
         model = User
         fields = ["username", "email"]

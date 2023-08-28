@@ -15,12 +15,12 @@
                 <li><a>Community</a></li>
             </ul>
         </div>
-        {% if logged_in %}
+        {% if user.is_authenticated %}
         <!-- User info -->
         <div class="userblock">
             <a>User</a>
             <ul>
-                <li><a>About</a></li>
+                <li><a href="{% url 'userpostsdefault' username=user.username %}">Profile</a></li>
                 <li><a>Settings</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             </ul>

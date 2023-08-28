@@ -1,12 +1,22 @@
 
 {% extends "common.html" %}
 
-{% block title %}{{user.username}}- Posts{% endblock %}
+{% block title %}Posts - {{user.username}}{% endblock %}
 
 {% block sidearea %}
 <div>
-    <b>{{user.username}}</b>
-    Birthday: <b>{{user.birthday}}</b>
+    <b>About</b>
+    <p>Username: {{user.username}}</p>
+    <p>Birthday: {{userdata.birthday}}</p>
+</div>
+
+<div>
+    <b>Communities</b>
+    {% for community in communities %}
+    <p><a>{{community.name}}</a></p>
+    {% empty %} 
+    <p>None yet!</p>
+    {% endfor %}
 </div>
 {% endblock %}
 

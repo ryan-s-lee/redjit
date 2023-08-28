@@ -3,6 +3,7 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.core import validators
+from . import managers
 
 class Community(models.Model):
     name = models.CharField(max_length=32, unique=True, validators=[validators.validate_slug])
@@ -11,12 +12,14 @@ class Community(models.Model):
     
 
 class UserData(models.Model):
+    objects = managers.UserDataManager()
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    userhandle = models.CharField(max_length=32, unique=True)
-    birthday = models.DateField()
-    communities = models.ManyToManyField(Community)
+    birthday = models.DateField(default=datetime.now)
+    communities = models.ManyToManyField(Community, blank=True)
     def __str__(self) -> str:
-        return self.username
+        return f"{self.user.username} ({self.userhandle})"
+
 
 class PostInfo(models.Model):
     content = models.TextField()

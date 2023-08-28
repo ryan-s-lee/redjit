@@ -40,9 +40,19 @@ urlpatterns = [
         name="userposts",
     ),
     path(
+        "u/<str:username>/posts",
+        views.UserPostsView,
+        name="userpostsdefault"
+    ),
+    path(
         "u/<str:username>/communities/<int:page>",
         views.UserCommunitiesView,
         name="usercommunities",
+    ),
+    path(
+        "u/str:username/communities",
+        views.UserCommunitiesView,
+        name="usercommunitiesdefault",
     ),
     path("logout", views.LogoutView, name="logout"),
 

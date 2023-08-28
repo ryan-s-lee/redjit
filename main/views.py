@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator
 from django.core.exceptions import SuspiciousOperation
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
@@ -14,7 +13,6 @@ from . import forms
 def FeedView(request, page=1):
     context = {
         "posts": models.MainPost.objects.all(),
-        "logged_in": request.user.is_authenticated,
     }
     return render(request, template_name="feed.html", context=context)
 
@@ -54,10 +52,12 @@ def RegisterView(request):
         form = forms.RegistrationForm(request.POST)
         if form.is_valid():  # let form validation take care of username check
             loginfo = form.cleaned_data
-            user = User.objects.create_user(
-                loginfo["username"], loginfo["email"], loginfo["password"]
+            userdata = models.UserData.objects.create_user(
+                loginfo["username"],
+                loginfo["email"],
+                loginfo["password"],
             )
-            login(request, user)
+            login(request, userdata.user)
             return redirect("feed")
     elif request.method == "GET":
         form = forms.RegistrationForm()
@@ -82,7 +82,9 @@ def SignInView(request):
         form = forms.SignInForm(request.POST)
         if form.is_valid():
             user = authenticate(
-                request, username=form.cleaned_data["username"], password=form.cleaned_data["password"]
+                request,
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"],
             )
             if user is not None:
                 login(request, user)
@@ -93,7 +95,7 @@ def SignInView(request):
     return render(request, template_name="signin.html", context={"form": form})
 
 
-def ThreadView(request, community, pk, page):
+def ThreadView(request, community, pk, page=1):
     mainpost = models.MainPost.objects.get(pk=pk)
     context = {
         "mainpost": mainpost,
@@ -101,13 +103,14 @@ def ThreadView(request, community, pk, page):
     return render(request, template_name="thread.html", context=context)
 
 
-def UserPostsView(request, username, page):
-    userdata = models.UserData.objects.get(username=username)
+def UserPostsView(request, username, page=1):
+    userdata = models.User.objects.get(username__exact=username).userdata
+    communities = userdata.communities.all()
     context = {
         "userdata": userdata,
-        "user": userdata.user,
+        "communities": communities,
     }
-    raise Http404
+    return render(request, template_name="userposts.html", context=context)
 
 
 def UserCommunitiesView(request, username, page):
