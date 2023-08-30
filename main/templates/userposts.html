@@ -13,7 +13,7 @@
 <div>
     <b>Communities</b>
     {% for community in communities %}
-    <p><a>{{community.name}}</a></p>
+    <p><a href="{% url 'community' name=community.name %}">{{community.name}}</a></p>
     {% empty %} 
     <p>None yet!</p>
     {% endfor %}

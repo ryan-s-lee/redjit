@@ -12,15 +12,19 @@
             <a>+ Create</a>
             <ul>
                 <li><a>Post</a></li>
-                <li><a>Community</a></li>
+                <li><a href="{% url 'createcommunity' %}">Community</a></li>
             </ul>
         </div>
+        <div>
+            <a href="{% url 'communitylist' %}">All Communities</a>
+        </div>
+                    
         {% if user.is_authenticated %}
         <!-- User info -->
         <div class="userblock">
-            <a>User</a>
+            <a>{{ user.username }}</a>
             <ul>
-                <li><a href="{% url 'userpostsdefault' username=user.username %}">Profile</a></li>
+                <li><a href="{% url 'userposts' username=user.username %}">Profile</a></li>
                 <li><a>Settings</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             </ul>

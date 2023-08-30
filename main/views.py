@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.core.exceptions import SuspiciousOperation
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import Group
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader
@@ -10,9 +11,9 @@ from . import forms
 # Create your views here.
 
 
-def FeedView(request, page=1):
+def FeedView(request):
     context = {
-        "posts": models.MainPost.objects.all(),
+        "posts": models.Thread.objects.all(),
     }
     return render(request, template_name="feed.html", context=context)
 
@@ -22,20 +23,59 @@ def CreatePostView(request, community):
 
 
 def CreateCommunityView(request):
-    raise Http404
+    if not request.user.is_authenticated:
+        return redirect("signin")
+
+    if request.method == "GET":
+        form = forms.CreateCommunityForm()
+    elif request.method == "POST":
+        form = forms.CreateCommunityForm(request.POST)
+        if form.is_valid():
+            community = form.save()
+            request.user.userdata.communities.add(community)
+            request.user.userdata.moderating.add(community)
+            return redirect("community", name=community.name)
+    else:
+        raise SuspiciousOperation
+
+    context = {"form": form}
+    return render(request, template_name="createcommunity.html", context=context)
 
 
-def CommunityView(request, name, page):
+def CommunityView(request, name):
     community = models.Community.objects.get(name=name)
-    posts = community.post_set.all()
-    post_page = Paginator(posts, 10).get_page(page)
+    threads= community.thread_set.all()
+    if "page" in request:
+        pagenum = request.GET["page"]
+    else:
+        pagenum = 1
+    threads_page = Paginator(threads, 10).get_page(pagenum)
 
     context = {
-        "posts": post_page,
-        "pagenum": page,
-        "name": community.name,
+        "threads": threads_page,
+        "pagenum": pagenum,
+        "community": community,
     }
     return render(request, template_name="community.html", context=context)
+
+
+def CommunityListView(request):
+    if request.method == "GET":
+        communities = models.Community.objects.all()
+        context = {
+            "communities": communities,
+        }
+        return render(request, template_name="communitylist.html", context=context)
+    elif request.method == "POST":
+        # communities_to_join = [
+        #     communityname
+        #     for communityname in request.POST
+        #     if communityname != "csrfmiddlewaretoken"
+        # ]
+        # for community in communities_to_join:
+        #     # communities to remove is the difference of user's communities
+        #     # and form-submitted communities
+        return redirect("feed")
 
 
 def LogoutView(request):
@@ -58,7 +98,7 @@ def RegisterView(request):
                 loginfo["password"],
             )
             login(request, userdata.user)
-            return redirect("feed")
+            return redirect("feeddefault")
     elif request.method == "GET":
         form = forms.RegistrationForm()
 
@@ -95,8 +135,8 @@ def SignInView(request):
     return render(request, template_name="signin.html", context={"form": form})
 
 
-def ThreadView(request, community, pk, page=1):
-    mainpost = models.MainPost.objects.get(pk=pk)
+def ThreadView(request, community, pk):
+    mainpost = models.Thread.objects.get(pk=pk)
     context = {
         "mainpost": mainpost,
     }

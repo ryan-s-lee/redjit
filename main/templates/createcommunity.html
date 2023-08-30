@@ -1,0 +1,14 @@
+{% extends "common.html" %}
+
+{% block title %}Create Community{% endblock %}
+
+{% block sidearea %}
+{% endblock %}
+
+{% block mainarea %}
+<form method="post">
+    {% csrf_token %}
+    {{form.as_ul}}
+    <input type="submit">
+</form>
+{% endblock %}

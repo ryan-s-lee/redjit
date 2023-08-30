@@ -23,7 +23,9 @@ class EditPostForm(forms.ModelForm):
 
 
 class CreateCommunityForm(forms.ModelForm):
-    pass
+    class Meta:
+        model = models.Community
+        fields = ["name", "description", "rules"]
 
 
 class SignInForm(forms.Form):

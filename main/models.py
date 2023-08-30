@@ -1,44 +1,51 @@
 from django.db import models
 
 from datetime import datetime
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core import validators
 from . import managers
 
+
 class Community(models.Model):
-    name = models.CharField(max_length=32, unique=True, validators=[validators.validate_slug])
+    name = models.CharField(
+        max_length=32, unique=True, validators=[validators.validate_slug]
+    )
+    rules = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    creation_date = models.DateTimeField(default=datetime.now)
+
     def __str__(self):
         return self.name
-    
+
 
 class UserData(models.Model):
     objects = managers.UserDataManager()
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="userdata")
     birthday = models.DateField(default=datetime.now)
-    communities = models.ManyToManyField(Community, blank=True)
+    communities = models.ManyToManyField(Community, blank=True, related_name="user_set")
+    moderating = models.ManyToManyField(
+        Community, blank=True, related_name="moderator_set"
+    )
+
     def __str__(self) -> str:
-        return f"{self.user.username} ({self.userhandle})"
+        return f"{self.user.username}"
 
 
-class PostInfo(models.Model):
+class Post(models.Model):
     content = models.TextField()
+    author = models.ForeignKey(UserData, null=True, on_delete=models.SET_NULL)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True)
     creation_time = models.DateTimeField(default=datetime.now)
     last_edit_time = models.DateTimeField(default=datetime.now)
-    author = models.ForeignKey(UserData, null=True, on_delete=models.SET_NULL)
-    community = models.ForeignKey(Community, null=True, on_delete=models.SET_NULL)
 
     def __str__(self) -> str:
         return self.title + "#" + str(self.pk)
 
-class MainPost(models.Model):
+
+class Thread(models.Model):
     title = models.CharField(max_length=256)
-    info = models.OneToOneField(PostInfo, on_delete=models.CASCADE)
-
-class CommentPost(models.Model):
-    class Meta:
-        # order_with_respect_to = "parent"
-        pass
-
-    parent = models.ForeignKey(MainPost, on_delete=models.CASCADE)
-    info = models.OneToOneField(PostInfo, on_delete=models.CASCADE)
+    root_post = models.OneToOneField(
+        Post, on_delete=models.CASCADE, related_name="+"
+    )
+    community = models.ForeignKey(Community, null=True, on_delete=models.SET_NULL)

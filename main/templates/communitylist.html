@@ -1,0 +1,15 @@
+{% extends "common.html" %} 
+{% block title %}Communities{% endblock %} 
+
+{% block sidearea %}
+<div>
+  Pick the communities that you want to follow. Posts made in these communities
+  will be added to your feed. Make sure to save after you're done.
+</div>
+{% endblock %} 
+
+{% block mainarea %}
+  {% for community in communities %}
+  <a href="{% url 'community' name=community.name %}">{{community.name}}</a>
+  {% endfor %}
+{% endblock %}
