@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "common.html" %}
+
+{% block title %}New Post{% endblock %}
+
+{% block sidearea %}
+{% endblock %}
+
+{% block mainarea %}
+<form method="post">
+    {% csrf_token %}
+    {{thread_form.as_div}}
+    {{post_form.as_div}}
+    <input type="submit">
+</form>
+{% endblock %}

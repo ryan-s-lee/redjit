@@ -14,9 +14,15 @@ class RegistrationForm(forms.ModelForm):
         fields = ["username", "email"]
 
 
-class CreatePostForm(forms.ModelForm):
-    pass
+class NewThreadForm(forms.ModelForm):
+    class Meta:
+        model = models.Thread
+        fields = ["title", "community"]
 
+class NewPostForm(forms.ModelForm):
+    class Meta:
+        model = models.Post
+        fields = ["content"]
 
 class EditPostForm(forms.ModelForm):
     pass

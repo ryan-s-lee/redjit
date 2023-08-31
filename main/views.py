@@ -18,8 +18,49 @@ def FeedView(request):
     return render(request, template_name="feed.html", context=context)
 
 
-def CreatePostView(request, community):
-    raise Http404
+def CreatePostView(request, community=None):
+    context = {}
+    if not request.user.is_authenticated:
+        return redirect("signin")
+
+    if request.method == "GET":
+        prerecorded_data = {"community": community}
+
+        context["thread_form"] = forms.NewThreadForm(
+            prerecorded_data, prefix="thread-data"
+        )
+        context["post_form"] = forms.NewPostForm(prefix="post-content")
+    elif request.method == "POST":
+        print(request.POST)
+        form1 = forms.NewThreadForm(request.POST, prefix="thread-data")
+        form2 = forms.NewPostForm(request.POST, prefix="post-content")
+
+        if form1.is_valid() and form2.is_valid():
+            post = models.Post(
+                content=form2["content"].value(),
+                author=request.user.userdata,
+                parent=None,
+            )
+            post.save()
+
+            submitted_community = models.Community.objects.get(
+                pk=form1["community"].value()
+            )
+            thread = models.Thread.objects.create(
+                title=form1["title"].value(),
+                root_post=post,
+                community=submitted_community,
+            )
+            return redirect(
+                "thread", community=submitted_community, thread_pk=thread.pk
+            )
+        else:
+            context["thread_form"] = form1
+            context["post_form"] = form2
+    else:
+        raise SuspiciousOperation
+
+    return render(request, template_name="createpost.html", context=context)
 
 
 def CreateCommunityView(request):
@@ -32,8 +73,10 @@ def CreateCommunityView(request):
         form = forms.CreateCommunityForm(request.POST)
         if form.is_valid():
             community = form.save()
-            request.user.userdata.communities.add(community)
-            request.user.userdata.moderating.add(community)
+            if hasattr(request.user, "userdata"):
+                request.user.userdata.communities.add(community)
+                request.user.userdata.moderating.add(community)
+
             return redirect("community", name=community.name)
     else:
         raise SuspiciousOperation
@@ -44,7 +87,7 @@ def CreateCommunityView(request):
 
 def CommunityView(request, name):
     community = models.Community.objects.get(name=name)
-    threads= community.thread_set.all()
+    threads = community.thread_set.all()
     if "page" in request:
         pagenum = request.GET["page"]
     else:
@@ -135,10 +178,10 @@ def SignInView(request):
     return render(request, template_name="signin.html", context={"form": form})
 
 
-def ThreadView(request, community, pk):
-    mainpost = models.Thread.objects.get(pk=pk)
+def ThreadView(request, community, thread_pk, post_pk=None):
+    thread = models.Thread.objects.get(pk=thread_pk)
     context = {
-        "mainpost": mainpost,
+        "thread": thread,
     }
     return render(request, template_name="thread.html", context=context)
 
@@ -146,6 +189,8 @@ def ThreadView(request, community, pk):
 def UserPostsView(request, username, page=1):
     userdata = models.User.objects.get(username__exact=username).userdata
     communities = userdata.communities.all()
+
+    # get a list of threads where each thread contains a post in userdata
     context = {
         "userdata": userdata,
         "communities": communities,

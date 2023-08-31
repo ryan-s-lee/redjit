@@ -35,7 +35,7 @@ class UserData(models.Model):
 class Post(models.Model):
     content = models.TextField()
     author = models.ForeignKey(UserData, null=True, on_delete=models.SET_NULL)
-    parent = models.ForeignKey("self", on_delete=models.CASCADE, blank=True)
+    parent = models.ForeignKey("self", on_delete=models.PROTECT, null=True)
     creation_time = models.DateTimeField(default=datetime.now)
     last_edit_time = models.DateTimeField(default=datetime.now)
 
@@ -46,6 +46,6 @@ class Post(models.Model):
 class Thread(models.Model):
     title = models.CharField(max_length=256)
     root_post = models.OneToOneField(
-        Post, on_delete=models.CASCADE, related_name="+"
+        Post, on_delete=models.PROTECT 
     )
-    community = models.ForeignKey(Community, null=True, on_delete=models.SET_NULL)
+    community = models.ForeignKey(Community, blank=False, on_delete=models.CASCADE)

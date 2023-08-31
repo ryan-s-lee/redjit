@@ -11,15 +11,17 @@ X   UserPostsView (sidebar only)
 X   SignInView
 X   CreateCommunityView
 X   CommunityListView (list only)
-    CommunityView (sidebar only)
-    Create Post View
+X   CommunityView (sidebar only)
+X   Create Post View
+X   Thread View (root post only)
     UserPostsView
-    CommunityListView (community following)
-    Feed View (complete)
+    Feed View (populate by most recent, anywhere)
     UserCommunitiesView
-    Thread View
+    Thread View (with comments)
     Reply View
     Community View
+    CommunityListView (community following)
+    FeedView (population based on followed communities)
     Style everything!
 '''
 
@@ -28,8 +30,11 @@ urlpatterns = [
     # community and post-related views
     path("r/<str:name>", views.CommunityView, name="community"),
     path("r-list", views.CommunityListView, name="communitylist"),
-    path("create-community", views.CreateCommunityView, name="createcommunity"),
-    path("r/<str:community>/post", views.CreatePostView, name="createpost"),
+    path("new-community", views.CreateCommunityView, name="createcommunity"),
+    path("new-thread", views.CreatePostView, name="newthread"),
+    path("r/<str:community>/new-thread", views.CreatePostView, name="newthread"),
+    path("r/<str:community>/thread/<int:thread_pk>", views.ThreadView, name="thread"),
+    path("r/<str:community>/thread/<int:thread_pk>/<int:post_pk>", views.ThreadView, name="thread"),
 
     # user related views
     path("signin", views.SignInView, name="signin"),
