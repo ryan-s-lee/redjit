@@ -13,7 +13,7 @@ from . import forms
 
 def FeedView(request):
     context = {
-        "posts": models.Thread.objects.all(),
+        "threads": models.Thread.objects.all(),
     }
     return render(request, template_name="feed.html", context=context)
 
@@ -88,7 +88,7 @@ def CreateCommunityView(request):
 def CommunityView(request, name):
     community = models.Community.objects.get(name=name)
     threads = community.thread_set.all()
-    if "page" in request:
+    if "page" in request.GET:
         pagenum = request.GET["page"]
     else:
         pagenum = 1
@@ -141,7 +141,7 @@ def RegisterView(request):
                 loginfo["password"],
             )
             login(request, userdata.user)
-            return redirect("feeddefault")
+            return redirect("feed")
     elif request.method == "GET":
         form = forms.RegistrationForm()
 
@@ -190,13 +190,26 @@ def UserPostsView(request, username, page=1):
     userdata = models.User.objects.get(username__exact=username).userdata
     communities = userdata.communities.all()
 
-    # get a list of threads where each thread contains a post in userdata
+    # TODO: get a list of threads where each thread contains a post in userdata
+    def get_thread(post):
+        curpost = post
+        while curpost.parent is not None:
+            curpost = curpost.parent
+        return curpost.thread
+
+    thread_post_pairs = [(get_thread(post), post) for post in userdata.post_set.all()]
+
     context = {
-        "userdata": userdata,
+        "viewed_userdata": userdata,
         "communities": communities,
+        "thread_post_pairs": thread_post_pairs,
     }
     return render(request, template_name="userposts.html", context=context)
 
 
-def UserCommunitiesView(request, username, page):
-    raise Http404
+def UserCommunitiesView(request, username):
+    context = {}
+    viewed_userdata = models.User.objects.get(username=username).userdata
+    context["viewed_userdata"] = viewed_userdata
+    context["communities"] = viewed_userdata.communities.all()
+    return render(request, template_name="usercommunities.html", context=context)

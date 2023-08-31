@@ -2,7 +2,7 @@
 
 {% block sidearea %}
 <div>
-    <b>r/{{ community.name }}</b>
+    <h3><a href="{% url 'community' name=community.name %}">r/{{ community.name }}</a></h3>
     <p>Created {{ community.creation_date }}</p>
 </div>
 <div class="rules">
@@ -13,9 +13,6 @@
 
 {% block mainarea %}
 {% for thread in threads %}
-<div>
-    <h3>{{thread.title}}</h3>
-    <p>{{thread.root_post.content}}</p>
-</div>
+{% include "components/threadblock.html" with thread=thread post=thread.root_post %}
 {% endfor %}
 {% endblock %}

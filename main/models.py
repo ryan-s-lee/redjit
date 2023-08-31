@@ -43,9 +43,12 @@ class Post(models.Model):
         return self.title + "#" + str(self.pk)
 
 
+
 class Thread(models.Model):
     title = models.CharField(max_length=256)
     root_post = models.OneToOneField(
-        Post, on_delete=models.PROTECT 
+        Post, on_delete=models.PROTECT
     )
     community = models.ForeignKey(Community, blank=False, on_delete=models.CASCADE)
+    class Meta:
+        ordering = ["-root_post__creation_time"]

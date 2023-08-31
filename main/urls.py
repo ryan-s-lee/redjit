@@ -14,15 +14,19 @@ X   CommunityListView (list only)
 X   CommunityView (sidebar only)
 X   Create Post View
 X   Thread View (root post only)
-    UserPostsView
-    Feed View (populate by most recent, anywhere)
-    UserCommunitiesView
+X   UserPostsView
+X   Feed View (populate by most recent, anywhere)
+X   UserCommunitiesView
     Thread View (with comments)
     Reply View
-    Community View
-    CommunityListView (community following)
+X   Community View
+X   CommunityListView (community following)
     FeedView (population based on followed communities)
     Style everything!
+    Add a search bar in feed for looking up communities, posts, and users
+    Add a search bar in communities for looking up posts specific to the community
+    Add a search bar in users for looking up communities and posts related to a user
+    Add a search bar in threads for looking up relevant posts within the thread
 '''
 
 urlpatterns = [
@@ -34,7 +38,7 @@ urlpatterns = [
     path("new-thread", views.CreatePostView, name="newthread"),
     path("r/<str:community>/new-thread", views.CreatePostView, name="newthread"),
     path("r/<str:community>/thread/<int:thread_pk>", views.ThreadView, name="thread"),
-    path("r/<str:community>/thread/<int:thread_pk>/<int:post_pk>", views.ThreadView, name="thread"),
+    path("r/<str:community>/thread/<int:thread_pk>/<int:post_pk>", views.ThreadView, name="thread_post"),
 
     # user related views
     path("signin", views.SignInView, name="signin"),
@@ -45,7 +49,7 @@ urlpatterns = [
         name="userposts"
     ),
     path(
-        "u/str:username/communities",
+        "u/<str:username>/communities",
         views.UserCommunitiesView,
         name="usercommunities",
     ),

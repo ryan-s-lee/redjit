@@ -8,15 +8,18 @@
 <body>
     <!-- Control Bar-->
     <navbar>
+        <div>
+            <a href="{% url 'feed' %}">Home</a>
+        </div>
+        <div>
+            <a href="{% url 'communitylist' %}">All Communities</a>
+        </div>
         <div class="creatediv">
             <a>+ Create</a>
             <ul>
                 <li><a href="{% url 'newthread' %}">Post</a></li>
                 <li><a href="{% url 'createcommunity' %}">Community</a></li>
             </ul>
-        </div>
-        <div>
-            <a href="{% url 'communitylist' %}">All Communities</a>
         </div>
                     
         {% if user.is_authenticated %}

@@ -1,0 +1,16 @@
+{% extends "common.html" %}
+
+{% block title %}Communities - {{viewed_userdata.user.username}}{% endblock %}
+
+{% block sidearea %}
+{% include "components/userblock.html" with user=viewed_userdata.user %}
+{% endblock %}
+
+{% block mainarea %}
+<h3>Communities</h3>
+{% for community in communities %}
+<div>
+    <a href="{% url 'community' name=community.name %}">{{ community.name }}</a>
+</div>
+{% endfor %}
+{% endblock %}

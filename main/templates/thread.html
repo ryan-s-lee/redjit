@@ -3,7 +3,7 @@
 {% block title %}Title{% endblock %}
 
 {% block sidearea %}
-<b>r/{{thread.community}}</b>
+<h3><a href="{% url 'community' name=thread.community.name %}">r/{{thread.community}}</a></h3>
 {% endblock %}
 
 {% block mainarea %}

@@ -1,15 +1,10 @@
 
 {% extends "common.html" %}
 
-{% block title %}Posts - {{user.username}}{% endblock %}
+{% block title %}Posts - {{viewed_userdata.user.username}}{% endblock %}
 
 {% block sidearea %}
-<div>
-    <b>About</b>
-    <p>Username: {{user.username}}</p>
-    <p>Birthday: {{userdata.birthday}}</p>
-</div>
-
+{% include "components/userblock.html" with user=user %}
 <div>
     <b>Communities</b>
     {% for community in communities %}
@@ -17,15 +12,15 @@
     {% empty %} 
     <p>None yet!</p>
     {% endfor %}
+    <p><a href="{% url 'usercommunities' username=viewed_userdata.user.username %}">See all communities</a></p>
 </div>
 {% endblock %}
 
 {% block mainarea %}
 <div>
     <h3>Threads</h3>
-    {% for post in userdata.post_set %}
-    <!-- get its thread and display it -->
-    <b><a href="{% url 'thread' thread_pk=post.thread.pk post_pk=post.pk %}"></a></b>
+    {% for thread, post in thread_post_pairs %}
+    {% include "components/threadblock.html" with thread=thread post=post %}
     {% endfor %}
 </div>
 {% endblock %}

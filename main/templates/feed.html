@@ -3,9 +3,19 @@
 {% block title %}Title{% endblock %}
 
 {% block sidearea %}
-Side Area
+<div>
+    <h3>
+        Home
+    </h3>
+    <p class="description">
+        Welcome to Redjit! Feel free to browse through an assortment of posts 
+        made by people like you.
+    </p>
+</div>
 {% endblock %}
 
 {% block mainarea %}
-Main Area
+{% for thread in threads %}
+{% include "components/threadblock.html" with thread=thread post=thread.root_post %}
+{% endfor %}
 {% endblock %}

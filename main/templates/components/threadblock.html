@@ -1,0 +1,24 @@
+<!-- requires two parameters: thread, and post. -->
+<div>
+    <h4>
+        <a href="{% url 'thread' thread_pk=thread.pk post_pk=post.pk}">
+            {{ thread.title }}
+        </a>
+    </h4>
+    <p class="threadblock-community">
+        <a href="{% url 'community' name=thread.community.name %}">
+            r/{{ thread.community.name }}
+        </a>
+    </p>
+    <p class="threadblock-author">
+        <a href="{% url 'userposts' username=thread.root_post.author.user.username %}">
+            u/{{ thread.root_post.author.user.username }}
+        </a>
+    </p>
+    <p class="threadblock-dateposted">
+        <a href="">
+            {{post.creation_time}}
+        </a>
+    </p>
+    <p>{{ post.content }}</p>
+</div>

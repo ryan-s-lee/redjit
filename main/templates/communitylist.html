@@ -10,6 +10,6 @@
 
 {% block mainarea %}
   {% for community in communities %}
-  <a href="{% url 'community' name=community.name %}">{{community.name}}</a>
+  <div><a href="{% url 'community' name=community.name %}">{{community.name}}</a></div>
   {% endfor %}
 {% endblock %}
