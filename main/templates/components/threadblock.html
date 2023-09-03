@@ -1,7 +1,7 @@
 <!-- requires two parameters: thread, and post. -->
-<div>
+<div class="threadblock-div">
     <h4>
-        <a href="{% url 'thread' thread_pk=thread.pk post_pk=post.pk}">
+        <a href="{% url 'thread_post' community=thread.community.name thread_pk=thread.pk post_pk=post.pk %}">
             {{ thread.title }}
         </a>
     </h4>

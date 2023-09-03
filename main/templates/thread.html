@@ -7,9 +7,20 @@
 {% endblock %}
 
 {% block mainarea %}
-<div>
-    <p>{{thread.root_post.author}}</p>
-    <p>{{thread.title}}</p>
+<div class="thread-mainpost">
+    <h3>{{thread.title}}</h3>
+    <p><a href="{% url 'userposts' username=thread.root_post.author.user.username %}">u/{{thread.root_post.author.user.username}}</a></p>
     <p>{{thread.root_post.content}}</p>
+</div>
+<div class="thread-actionbar">
+    <a href="{% url 'reply' community=thread.community.name post_pk=thread.root_post.pk %}">Reply</a>
+</div>
+
+<div class="thread-comments">
+    {% if replies|length %}
+    {% for reply in replies %}
+    {% include "components/threadcommentblock.html" with thread=thread post=reply %}
+    {% endfor %}
+    {% endif %}
 </div>
 {% endblock %}

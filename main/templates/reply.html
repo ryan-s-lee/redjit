@@ -1,0 +1,28 @@
+{% extends "common.html" %}
+
+{% block title %}Title{% endblock %}
+
+{% block sidearea %}
+{% endblock %}
+
+{% block mainarea %}
+<div class="replychain">
+    {% for reply in replychain %}
+    <div>
+        <p>
+            <a href="{% url 'userposts' username=reply.author.user.username %}">
+                u/{{reply.author.user.username}}
+            </a>
+        </p>
+        <p>Created {{reply.creation_time}}</p>
+        <p>{{reply.content}}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ replyform.as_div }}
+    <input type="submit">
+</form>
+{% endblock %}

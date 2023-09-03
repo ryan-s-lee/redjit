@@ -35,7 +35,7 @@ class UserData(models.Model):
 class Post(models.Model):
     content = models.TextField()
     author = models.ForeignKey(UserData, null=True, on_delete=models.SET_NULL)
-    parent = models.ForeignKey("self", on_delete=models.PROTECT, null=True)
+    parent = models.ForeignKey("self", on_delete=models.PROTECT, null=True, related_name="replies")
     creation_time = models.DateTimeField(default=datetime.now)
     last_edit_time = models.DateTimeField(default=datetime.now)
 

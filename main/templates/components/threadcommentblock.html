@@ -1,0 +1,21 @@
+<!-- takes 3 parameters: thread, post -->
+
+<div class="threadcommentblock-div">
+    <div class="thread-userdatarow">
+        <p><b><a href="{% url 'userposts' username=post.author.user.username %}">u/{{ post.author.user.username }}</a></b></p>
+        <p>Created {{ post.creation_time }}</p>
+    </div>
+    <div class="thread-content">
+        <p>{{post.content}}</p>
+    </div>
+    <div class="thread-commentactionbar">
+        <p><a href="{% url 'reply' community=thread.community.name post_pk=post.pk %}">Reply</a></p>
+    </div>
+    <div class="thread-comment">
+        {% if post.replies.all|length %}
+        {% for reply in post.replies.all %}
+        {% include "components/threadcommentblock.html" with thread=thread post=reply %}
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>

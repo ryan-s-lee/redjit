@@ -1,0 +1,81 @@
+:root {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    --primary-color: white;
+    --secondary-color: grey;
+    --accent-color: darkgrey;
+    --secondary-secondary-color: white;
+    color: black;
+}
+body {
+    padding: 0px;
+    margin: 0px;
+    width: 800px;
+    background-color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+navbar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--secondary-color);
+
+    border-radius: 5px;
+    margin: 10px;
+}
+
+navbar > div {
+    padding: 10px;
+    position:relative;
+}
+navbar a {
+    text-decoration: none;
+    color: var(--secondary-secondary-color)
+}
+
+navbar > div > ul{
+    visibility: hidden;
+    position:absolute;
+    top: 10px;
+    list-style: none;
+    padding-left: 0;
+    background-color: grey;
+    padding-top: 10px;
+}
+
+
+navbar > div:hover > ul{
+    visibility: visible;
+}
+
+.threadcommentblock-div {
+    margin-left: 1rem;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr;
+    width: 100%;
+    column-gap: 10px;
+}
+
+main > .common-mainarea {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+main > .common-sidearea {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}

@@ -1,8 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main/globals.css' %}">
+    {% block styles %}
+    {% endblock %}
     <title>{% block title %}Common Template{% endblock %}</title>
 </head>
 <body>
@@ -15,7 +19,7 @@
             <a href="{% url 'communitylist' %}">All Communities</a>
         </div>
         <div class="creatediv">
-            <a>+ Create</a>
+            <a href="{% url 'newthread' %}">Create</a>
             <ul>
                 <li><a href="{% url 'newthread' %}">Post</a></li>
                 <li><a href="{% url 'createcommunity' %}">Community</a></li>
@@ -25,7 +29,7 @@
         {% if user.is_authenticated %}
         <!-- User info -->
         <div class="userblock">
-            <a>{{ user.username }}</a>
+            <a href="{% url 'userposts' username=user.username %}">{{ user.username }}</a>
             <ul>
                 <li><a href="{% url 'userposts' username=user.username %}">Profile</a></li>
                 <li><a>Settings</a></li>
@@ -33,22 +37,19 @@
             </ul>
         </div>
         {% else %}
-        <ul>
-
-            <li><a href="{% url 'signin' %}">Sign In</a></li>
-            <li><a href="{% url 'register' %}">Register</a></li>
-        </ul>
+        <div><a href="{% url 'signin' %}">Sign In</a></div>
+        <div><a href="{% url 'register' %}">Register</a></div>
         {% endif %}
     </navbar>
     <!-- Content -->
     <main>
         <!-- Side Area -->
-        <div>
+        <div class="common-sidearea">
             {% block sidearea %}
             {% endblock %}
         </div>
         <!-- Main Area -->
-        <div>
+        <div class="common-mainarea">
             {% block mainarea %}
             {% endblock %}
         </div>

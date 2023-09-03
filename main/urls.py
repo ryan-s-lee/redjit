@@ -17,10 +17,11 @@ X   Thread View (root post only)
 X   UserPostsView
 X   Feed View (populate by most recent, anywhere)
 X   UserCommunitiesView
-    Thread View (with comments)
-    Reply View
+X   Thread View (with comments)
+X   Reply View
 X   Community View
 X   CommunityListView (community following)
+X   Edit Post View
     FeedView (population based on followed communities)
     Style everything!
     Add a search bar in feed for looking up communities, posts, and users
@@ -39,6 +40,7 @@ urlpatterns = [
     path("r/<str:community>/new-thread", views.CreatePostView, name="newthread"),
     path("r/<str:community>/thread/<int:thread_pk>", views.ThreadView, name="thread"),
     path("r/<str:community>/thread/<int:thread_pk>/<int:post_pk>", views.ThreadView, name="thread_post"),
+    path("r/<str:community>/reply/<int:post_pk>", views.ReplyView, name="reply"),
 
     # user related views
     path("signin", views.SignInView, name="signin"),

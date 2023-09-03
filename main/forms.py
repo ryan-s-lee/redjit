@@ -34,6 +34,11 @@ class CreateCommunityForm(forms.ModelForm):
         fields = ["name", "description", "rules"]
 
 
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = models.Post
+        fields = ["content"]
+
 class SignInForm(forms.Form):
     username_validator = UnicodeUsernameValidator()
     username = forms.CharField(max_length=150, validators=[username_validator])

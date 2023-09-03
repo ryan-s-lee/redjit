@@ -126,8 +126,35 @@ def LogoutView(request):
     return redirect("feed")
 
 
-def ReplyView(request, community, pk, page):
-    raise Http404
+def ReplyView(request, community, post_pk):
+    if not request.user.is_authenticated:
+        return redirect("signi")
+
+    toReplyTo = models.Post.objects.get(pk=post_pk)
+    curpost = toReplyTo
+    replychain = [curpost]
+    while curpost.parent is not None:
+        curpost = curpost.parent
+        replychain.insert(0, curpost)
+    if request.method == "GET":
+        replyform = forms.ReplyForm(request.POST)
+    elif request.method == "POST":
+        replyform = forms.ReplyForm(request.POST)
+        if replyform.is_valid():
+            models.Post.objects.create(
+                author=request.user.userdata,
+                content=replyform["content"].value(),
+                parent=toReplyTo
+            )
+            return redirect("thread", community=community, thread_pk=replychain[0].thread.pk)
+    else:
+        raise SuspiciousOperation
+
+    return render(request, template_name="reply.html", context={
+        "replychain": replychain,
+        "replyform": replyform,
+    })
+
 
 
 def RegisterView(request):
@@ -179,10 +206,16 @@ def SignInView(request):
 
 
 def ThreadView(request, community, thread_pk, post_pk=None):
-    thread = models.Thread.objects.get(pk=thread_pk)
-    context = {
-        "thread": thread,
-    }
+    context = {}
+    context["thread"] = models.Thread.objects.get(pk=thread_pk)
+    if (post_pk is not None):
+        context["post"] = models.Post.objects.get(pk=post_pk)
+        context["replies"] = context["post"].replies.all()
+    else:
+        context["replies"] = context["thread"].root_post.replies.all()
+
+
+
     return render(request, template_name="thread.html", context=context)
 
 
