@@ -164,7 +164,6 @@ def RegisterView(request):
             loginfo = form.cleaned_data
             userdata = models.UserData.objects.create_user(
                 loginfo["username"],
-                loginfo["email"],
                 loginfo["password"],
             )
             login(request, userdata.user)
